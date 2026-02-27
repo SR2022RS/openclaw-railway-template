@@ -967,6 +967,19 @@ app.use(async (req, res) => {
         .type("text/plain")
         .send(`Gateway not ready: ${String(err)}`);
     }
+
+    // Auto-inject gateway token into Control UI URL hash so users don't
+    // need to manually append #token=... — the SPA reads the hash fragment
+    // to authenticate its WebSocket connection to the gateway.
+    // Only intercept bare root requests without ?ui=1 (which we add after
+    // setting the hash to let the real SPA load on the second request).
+    if (req.path === "/" && !req.query.ui && req.accepts("html")) {
+      return res.type("text/html").send(
+        `<!doctype html><html><head><meta charset="UTF-8"><script>` +
+        `location.replace(location.pathname+"?ui=1#token=${OPENCLAW_GATEWAY_TOKEN}")` +
+        `</script></head><body></body></html>`,
+      );
+    }
   }
 
   // Proxy to gateway (auth token injected via proxyReq event)
