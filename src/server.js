@@ -188,6 +188,30 @@ async function startGateway() {
 
   console.log(`[gateway] ========== TOKEN SYNC COMPLETE ==========`);
 
+  // Patch Control UI SPA: the bundled UI uses mode:"webchat" for its
+  // WebSocket connect params, but gateway v2026.2.27+ only accepts
+  // "backend", "cli", or "ui". Rewrite in-place before gateway starts.
+  try {
+    const uiAssetsDir = path.join(
+      path.dirname(OPENCLAW_ENTRY),
+      "control-ui",
+      "assets",
+    );
+    if (fs.existsSync(uiAssetsDir)) {
+      for (const f of fs.readdirSync(uiAssetsDir)) {
+        if (!f.endsWith(".js")) continue;
+        const fp = path.join(uiAssetsDir, f);
+        const src = fs.readFileSync(fp, "utf8");
+        if (src.includes('mode:"webchat"')) {
+          fs.writeFileSync(fp, src.replace(/mode:"webchat"/g, 'mode:"ui"'));
+          console.log(`[gateway] Patched Control UI ${f}: mode:"webchat" -> mode:"ui"`);
+        }
+      }
+    }
+  } catch (err) {
+    console.log(`[gateway] Control UI patch skipped: ${err.message}`);
+  }
+
   const args = [
     "gateway",
     "run",
