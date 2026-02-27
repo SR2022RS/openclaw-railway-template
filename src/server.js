@@ -648,6 +648,21 @@ app.post("/setup/api/run", requireSetupAuth, async (req, res) => {
         OPENCLAW_NODE,
         clawArgs(["config", "set", "gateway.controlUi.allowInsecureAuth", "true"]),
       );
+      // Auto-configure Control UI allowed origins from Railway domain
+      const railwayDomain = process.env.RAILWAY_PUBLIC_DOMAIN;
+      if (railwayDomain) {
+        await runCmd(
+          OPENCLAW_NODE,
+          clawArgs([
+            "config",
+            "set",
+            "--json",
+            "gateway.controlUi.allowedOrigins",
+            JSON.stringify([`https://${railwayDomain}`]),
+          ]),
+        );
+        extra += `\n[controlUi] allowedOrigins set to https://${railwayDomain}\n`;
+      }
 
       const channelsHelp = await runCmd(
         OPENCLAW_NODE,
