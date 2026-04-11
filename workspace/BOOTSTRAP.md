@@ -25,6 +25,8 @@ Load files in this exact order. **Do not skip, do not reorder.**
 5. **HEARTBEAT.md** — Scheduled checks and proactive monitoring routines
 6. **TOOLS.md** — Configuration (Telegram, OpenRouter, Railway API, GitHub API, Docker, env vars)
 7. **AGENTS.md** — Full ecosystem registry and routing rules
+8. **LESSONS.md** — Mistake log and permanent fixes (read every boot)
+9. **DAILY-LOG.md** — Today + last 2 days of operational journal
 
 **Total Load Time:** ~15 seconds depending on MEMORY.md volume.
 
