@@ -17,10 +17,3 @@ npm-debug.log*
 .claude/
 .serena/
 .tmpdata/
-
-# User-specific / not upstreamable
-n8n/
-src/automations.js
-workspace/system_prompt.md
-scripts/install-skills.sh
-entrypoint.sh
